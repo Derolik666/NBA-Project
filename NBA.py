@@ -21,12 +21,13 @@ pbp = pd.read_csv("Play_by_Play.txt", sep="\t")
 ecodes = pd.read_csv("Event_Codes.txt", sep="\t")
 lineup = pd.read_csv("Game_Lineup.txt", sep='\t')
 
-for row in pbp.itertuples():
-    if row.Game_id not in games:
-        games.append(row.Game_id)
 
-# def count_game():
-#     global games
+def count_game():
+    global games
+    for row in pbp.itertuples():
+        if row.Game_id not in games:
+            games.append(row.Game_id)
+
 
 def initialize(gameID):
     global team_oneID
@@ -182,19 +183,19 @@ def erase():
 
 
 def main():
-    # count_game()
-    index = 0
+    count_game()
+    index = 1
     test = []
-    # test.append('4d475b083c4c975deabe3d9bfe98dd90')
-    # test.append('006728e4c10e957011e1f24878e6054a')
-    for game in test:
+    test.append('f959bc122b1ee996f3e12bc61c068ad4') # game 81
+    test.append('9892e70d668a7287f5460350b8a6afdf') #game 42
+    for game in games:
         initialize(game)
         count_points(game)
-        output = 'game' + str(index) + '.txt'
+        output = 'games' + str(index) + '.txt'
         result(game, output)
         erase()
         index += 1
 
-
+# still missing game 81
 if __name__ == '__main__':
     main()
