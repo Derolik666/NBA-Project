@@ -70,23 +70,33 @@ def count_points(gameID):
     global ft1
     global ft2
 
-    game = pbp[pbp.Game_id == gameID]
+    game = pbp[(pbp.Game_id == gameID)]
+    temp1 = []
+    temp2 = []
     for row in game.itertuples():
+        if row.Period not in temp1:
+            temp1.append(row.Period)
+    for index in temp1:
+        temp = game[game.Period == index].sort_values(['PC_Time','Event_Num','Period','WC_Time'], ascending=[False, True, True, True])
+        temp2.append(temp)
+    games = pd.concat(temp2)
+    for row in games.itertuples():
         if row.Period != period:
             period += 1
             change_lineup(gameID, period)
         # count possessions
         if possession != row.Team_id and (row.Team_id == team_oneID or row.Team_id == team_twoID):
-            if row.Team_id == team_oneID:
-                for player in on_court1:
-                    team_one_off[player][1] += 1
-                    team_one_def[player][1] += 1
-                possession = row.Team_id
-            elif row.Team_id == team_twoID:
-                for player in on_court2:
-                    team_two_off[player][1] += 1
-                    team_two_def[player][1] += 1
-                possession = row.Team_id
+            if row.Event_Msg_Type != 9 and row.Event_Msg_Type != 8:
+                if row.Team_id == team_oneID:
+                    for player in on_court1:
+                        team_one_off[player][1] += 1
+                        team_one_def[player][1] += 1
+                    possession = row.Team_id
+                elif row.Team_id == team_twoID:
+                    for player in on_court2:
+                        team_two_off[player][1] += 1
+                        team_two_def[player][1] += 1
+                    possession = row.Team_id
         # get free throw lineup
         if row.Event_Msg_Type == 6 and (row.Action_Type == 2 or row.Action_Type == 9 or row.Action_Type == 11
                                         or row.Action_Type == 14 or row.Action_Type == 15 or row.Action_Type == 17):
@@ -184,18 +194,22 @@ def erase():
 
 def main():
     count_game()
-    index = 1
+    index = 0
     test = []
-    test.append('f959bc122b1ee996f3e12bc61c068ad4') # game 81
-    test.append('9892e70d668a7287f5460350b8a6afdf') #game 42
-    for game in games:
+    test.append('006728e4c10e957011e1f24878e6054a') # game 20
+    # test.append('f959bc122b1ee996f3e12bc61c068ad4') # game 81
+    # test.append('9892e70d668a7287f5460350b8a6afdf') #game 42
+    for game in test:
         initialize(game)
         count_points(game)
-        output = 'games' + str(index) + '.txt'
-        result(game, output)
-        erase()
-        index += 1
+        # output = '0202' + str(index) + '.txt'
+        # result(game, output)
+        # erase()
+        # index += 1
+    for key, value in team_two_off.items():
+        print key
+        print value
 
-# still missing game 81
+
 if __name__ == '__main__':
     main()
