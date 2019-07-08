@@ -194,21 +194,14 @@ def erase():
 
 def main():
     count_game()
-    index = 0
-    test = []
-    test.append('006728e4c10e957011e1f24878e6054a') # game 20
-    # test.append('f959bc122b1ee996f3e12bc61c068ad4') # game 81
-    # test.append('9892e70d668a7287f5460350b8a6afdf') #game 42
-    for game in test:
+    index = 1
+    for game in games:
         initialize(game)
         count_points(game)
-        # output = '0202' + str(index) + '.txt'
-        # result(game, output)
-        # erase()
-        # index += 1
-    for key, value in team_two_off.items():
-        print key
-        print value
+        output = 'game' + str(index) + '.txt'
+        result(game, output)
+        erase()
+        index += 1
 
 
 if __name__ == '__main__':
