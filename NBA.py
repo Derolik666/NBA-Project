@@ -1,5 +1,5 @@
-import sys
 import pandas as pd
+
 
 games = []
 team_one = {}
@@ -139,38 +139,6 @@ def count_points(gameID):
                     team_one_def[player][0] += row.Option1
 
 
-def result(gameID, out):
-    for player in team_one_off:
-        if team_one_off[player][1] != 0:
-            off = 100.0 * team_one_off[player][0] / team_one_off[player][1]
-            team_one[player][0] = round(off, 2)
-        else:
-            team_one[player][0] = 0
-    for player in team_one_def:
-        if team_one_def[player][1] != 0:
-            deff = 100.0 * team_one_def[player][0] / team_one_def[player][1]
-            team_one[player][1] = round(deff, 2)
-        else:
-            team_one[player][1] = 0
-    for player in team_two_off:
-        if team_two_off[player][1] != 0:
-            off = 100.0 * team_two_off[player][0] / team_two_off[player][1]
-            team_two[player][0] = round(off, 2)
-        else:
-            team_two[player][0] = 0
-    for player in team_two_def:
-        if team_two_def[player][1] != 0:
-            deff = 100.0 * team_two_def[player][0] / team_two_def[player][1]
-            team_two[player][1] = round(deff, 2)
-        else:
-            team_two[player][1] = 0
-    with open(out, 'w') as output:
-        for key in team_one:
-            output.write(gameID + ', ' + key + ', ' + str(team_one[key][0]) + ', ' + str(team_one[key][1]) + '\n')
-        for key in team_two:
-            output.write(gameID + ', ' + key + ', ' + str(team_two[key][0]) + ', ' + str(team_two[key][1]) + '\n')
-
-
 def erase():
     global team_oneID
     global team_twoID
@@ -192,16 +160,46 @@ def erase():
     possession = 'S'
 
 
-def main():
+def result(out):
     count_game()
-    index = 1
     for game in games:
         initialize(game)
         count_points(game)
-        output = 'game' + str(index) + '.txt'
-        result(game, output)
+        for player in team_one_off:
+            if team_one_off[player][1] != 0:
+                off = 100.0 * team_one_off[player][0] / team_one_off[player][1]
+                team_one[player][0] = round(off, 2)
+            else:
+                team_one[player][0] = 0
+        for player in team_one_def:
+            if team_one_def[player][1] != 0:
+                deff = 100.0 * team_one_def[player][0] / team_one_def[player][1]
+                team_one[player][1] = round(deff, 2)
+            else:
+                team_one[player][1] = 0
+        for player in team_two_off:
+            if team_two_off[player][1] != 0:
+                off = 100.0 * team_two_off[player][0] / team_two_off[player][1]
+                team_two[player][0] = round(off, 2)
+            else:
+                team_two[player][0] = 0
+        for player in team_two_def:
+            if team_two_def[player][1] != 0:
+                deff = 100.0 * team_two_def[player][0] / team_two_def[player][1]
+                team_two[player][1] = round(deff, 2)
+            else:
+                team_two[player][1] = 0
+        with open(out, 'a') as output:
+            for key in team_one:
+                output.write(game + ', ' + key + ', ' + str(team_one[key][0]) + ', ' + str(team_one[key][1]) + '\n')
+            for key in team_two:
+                output.write(game + ', ' + key + ', ' + str(team_two[key][0]) + ', ' + str(team_two[key][1]) + '\n')
         erase()
-        index += 1
+
+
+def main():
+    output = 'Result.csv'
+    result(output)
 
 
 if __name__ == '__main__':
